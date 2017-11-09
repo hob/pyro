@@ -5,7 +5,7 @@ class Pyro extends React.Component {
     super(props);
   }
   render() {
-    return <div>Hello Worlds!!!</div>;
+    return <div id="contentPane">Hello World!!!</div>;
   }
 }
 

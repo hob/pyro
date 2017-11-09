@@ -1,0 +1,149 @@
+body {
+    background-color: #333;
+    margin:0px;
+    font-family: 'Roboto', sans-serif;
+    overflow-x:hidden;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Chrome/Safari/Opera */
+    -khtml-user-select: none; /* Konqueror */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently not supported by any browser */
+}
+#contentPane {
+    background-color: #FC0;
+    padding:8px;
+}
+#fillgaugeContainer {
+}
+#fillgauge {
+    width:600px;
+    height:600px;
+    margin:auto;
+    display:block;
+}
+.latestReadingTime {
+    color: #444;
+}
+#noReadings {
+    padding-top:30px;
+    text-align: center;
+    color:#FFF;
+    font-size:2em;
+}
+
+#historyGraph {
+    background-color:#333;
+    position:absolute;
+    width:100%;
+    top:0px;
+    bottom:4px;
+    opacity:.7;
+}
+
+.metricLine {
+    stroke-width:5;
+}
+
+#historyGraph > svg.line-graph {
+    width:100%;
+    height:100%;
+}
+#historyGraph > svg.line-graph text {
+    cursor: default;
+}
+
+#historyGraph > svg.line-graph .hover-line {
+    stroke: #6E7B8B;
+}
+
+#historyGraph > svg.line-graph .hide {
+    opacity: 0;
+}
+
+#historyGraph > svg.line-graph .axis {
+    shape-rendering: crispEdges;
+}
+
+#historyGraph > svg.line-graph .x.axis line {
+    stroke: #D3D3D3;
+    opacity:.3;
+}
+
+#historyGraph > svg.line-graph .x.axis .minor {
+    stroke-opacity: .5;
+}
+
+#historyGraph > svg.line-graph .x.axis path {
+    display: none;
+}
+
+#historyGraph > svg.line-graph .x.axis text {
+    font-size: 16px;
+    fill:#d0d0d0;
+    transform: translate(0px, 5px);
+}
+
+#historyGraph > svg.line-graph .y.axis line, .y.axis path {
+    stroke: #D3D3D3;
+    opacity:.3;
+}
+
+#historyGraph > svg.line-graph .y.axis text {
+    font-size: 16px;
+    fill:#d0d0d0;
+}
+
+#historyGraph > svg.line-graph .scale-button:not(.selected):hover {
+    text-decoration: underline;
+    cursor: pointer !important;
+}
+
+#historyGraph > svg.line-graph .date-label {
+    fill: #6E7B8B;
+    margin-top:8px;
+    font-size:20px;
+    display:none;
+}
+
+#historyGraph > svg.line-graph .line {
+    transform: translate(-9px, 0px);
+    fill:none;
+    stroke-width: 2px;
+}
+#focusText {
+    fill:white;
+}
+.hidden {
+    display:none;
+}
+text.legend {
+    font-size:20px;
+    display:none;
+}
+
+@media (max-height:612px) {
+    .metricLine {
+        stroke-width: 2;
+    }
+}
+@media (max-width:612px) and (orientation: portrait) {
+    #historyGraph {
+        display:none;
+    }
+    #fillgauge {
+        width:100%;
+        height:100%;
+        position:absolute;
+        top:0px;
+    }
+
+}
+@media (max-height:612px) and (orientation: landscape) {
+    #fillgaugeContainer {
+        display:none;
+    }
+    #historyGraph {
+        height:300px;
+    }
+}

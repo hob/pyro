@@ -1,7 +1,8 @@
-import Pyro from './components/Pyro'
+import Pyro from './components/Pyro';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-var React = require('react');
-var ReactDOM = require('react-dom');
+require('./scss/pyro.scss');
 
 ReactDOM.render(
   <Pyro />,
