@@ -6,5 +6,5 @@ require('./scss/pyro.scss');
 
 ReactDOM.render(
   <Pyro />,
-  document.getElementById('app')
+  document.getElementById('contentPane')
 );
