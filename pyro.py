@@ -70,6 +70,20 @@ def get_latest_reading_handler(event, context):
         return 20, {}, reading
 
 @proxy_response
+def get_sample_readings(event, context):
+    with conn.cursor() as cursor:
+        cursor.execute("select UNIX_TIMESTAMP(date), thermocouple_temp, cold_junction_temp from readings where user = 'hob' and unit = 'montecito' order by date desc limit 100")
+        readings = []
+        for row in cursor:
+            reading = {}
+            reading['d'] = row[0]
+            reading['t'] = row[1]
+            reading['c'] = row[2]
+            readings.append(reading)
+
+    return 200, {}, readings
+
+@proxy_response
 def clean_future_rows_handler(event, context):
     with conn.cursor() as cursor:
         cursor.execute("delete from resets where date > now()")
