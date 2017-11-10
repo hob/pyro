@@ -72,7 +72,7 @@ def get_latest_reading_handler(event, context):
 @proxy_response
 def get_sample_readings(event, context):
     with conn.cursor() as cursor:
-        cursor.execute("select UNIX_TIMESTAMP(date), thermocouple_temp, cold_junction_temp from readings where user = 'hob' and unit = 'montecito' order by date desc limit 100")
+        cursor.execute("select UNIX_TIMESTAMP(date), thermocouple_temp, cold_junction_temp from readings where user = 'hob' and unit = 'montecito' order by date asc limit 100")
         readings = []
         for row in cursor:
             reading = {}

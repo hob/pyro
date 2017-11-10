@@ -22,7 +22,7 @@ class LineGraph extends React.Component {
   }
 
   render() {
-    this.container = <div id={CONTAINER_ID}>LineGraph</div>;
+    this.container = <div id={CONTAINER_ID}></div>;
     return this.container;
   }
 
