@@ -1,4 +1,4 @@
-var colorThresholds = new Map();
+const colorThresholds = new Map();
 colorThresholds.set(500, "#800026");
 colorThresholds.set(450, "#bd0026");
 colorThresholds.set(400, "#e31a1c");
@@ -20,4 +20,9 @@ function getColorByTemp(temp) {
     return "#FFFFFF";
 }
 
+function getColorThresholds() {
+  return colorThresholds;
+}
+
 export {getColorByTemp};
+export {getColorThresholds};

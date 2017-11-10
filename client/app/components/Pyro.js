@@ -8,10 +8,10 @@ class Pyro extends React.Component {
     super(props);
     this.readings = props['readings'];
   }
-  
+
   render() {
     this.fillGauge = <FillGauge readings={this.readings} />
-    this.lineGraph = <LineGraph/>
+    this.lineGraph = <LineGraph readings={this.readings} />
     return <div id="contentPane">
       {this.fillGauge}
       {this.lineGraph}
