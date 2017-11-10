@@ -11,7 +11,7 @@ const extractSass = new ExtractTextPlugin({
 });
 
 module.exports = {
-  entry: __dirname + '/app/index.js',
+  entry: ['whatwg-fetch', __dirname + '/app/index.js'],
   module: {
     loaders:[
       {
@@ -38,5 +38,10 @@ module.exports = {
   plugins: [
     HTMLWebpackPluginConfig,
     extractSass
-  ]
+  ],
+  devServer: {
+    allowedHosts: [
+      "www.pyrodev.com"
+    ]
+  }
 };
