@@ -25,6 +25,19 @@ except pymysql.err.MySQLError as e:
 logger.info("SUCCESS: Connection to RDS mysql instance succeeded")
 
 @proxy_response
+def reset(event, context):
+    user = event['pathParameters']['user']
+    unit = event['pathParameters']['unit']
+
+    with conn.cursor() as cursor:
+        sql = "insert into resets values('%(user)s', '%(unit)s', now())" % {'user':user, 'unit':unit}
+        logger.info(sql);
+        cursor.execute(sql);
+        conn.commit();
+        
+    return 200, {}, {}
+
+@proxy_response
 def get_readings_handler(event, context):
     user = event['pathParameters']['user']
     unit = event['pathParameters']['unit']
