@@ -2,6 +2,7 @@ import sys
 import logging
 import rds_config
 import pymysql
+import json
 from lambda_proxy import *
 from inspect import getmembers
 from pprint import pprint
@@ -34,7 +35,21 @@ def reset(event, context):
         logger.info(sql);
         cursor.execute(sql);
         conn.commit();
-        
+
+    return 200, {}, {}
+
+@proxy_response
+def create_reading(event, context):
+    user = event['pathParameters']['user']
+    unit = event['pathParameters']['unit']
+    body = json.loads(event['body'])
+    thermocouple_temp = body['t']
+    cold_junction_temp = body['c']
+
+    with conn.cursor() as cursor:
+        cursor.execute("insert into readings values('%(user)s', '%(unit)s', now(), '%(thermocouple_temp)s', '%(cold_junction_temp)s')" % {'user':user, 'unit':unit, 'thermocouple_temp': thermocouple_temp, 'cold_junction_temp': cold_junction_temp});
+        conn.commit();
+
     return 200, {}, {}
 
 @proxy_response
