@@ -65,7 +65,8 @@ def get_readings_handler(event, context):
         else:
             last_reset = row[0]
 
-        cursor.execute("select UNIX_TIMESTAMP(date), thermocouple_temp, cold_junction_temp from readings where user = '%(user)s' and unit = '%(unit)s' and date >= now() - INTERVAL 1 DAY and date >= FROM_UNIXTIME(%(date)s) limit 1000" %{'user':user, 'unit':unit, 'date':last_reset})
+        # The nested select takes care of selecting the correct rows using LIMIT and then reversing their order
+        cursor.execute("select UNIX_TIMESTAMP(date), thermocouple_temp, cold_junction_temp from (select date, thermocouple_temp, cold_junction_temp from readings where user = '%(user)s' and unit = '%(unit)s' and date >= FROM_UNIXTIME(%(date)s) order by date desc limit 1000) as T order by date asc" %{'user':user, 'unit':unit, 'date':last_reset})
         readings = []
         for row in cursor:
             reading = {}
@@ -88,19 +89,19 @@ def get_latest_reading_handler(event, context):
         else:
             last_reset = row[0]
 
-        cursor.execute("select UNIX_TIMESTAMP(date), thermocouple_temp, cold_junction_temp from readings where user = '%(user)s' and unit = '%(unit)s' and date >= now() - INTERVAL 1 DAY and date >= FROM_UNIXTIME(%(date)s) limit 1" %{'user':user, 'unit':unit, 'date':last_reset})
+        cursor.execute("select UNIX_TIMESTAMP(date), thermocouple_temp, cold_junction_temp from ebdb.readings where user = '%(user)s' and unit = '%(unit)s' and date >= FROM_UNIXTIME(%(date)s) order by date desc limit 1" %{'user':user, 'unit':unit, 'date':last_reset})
         row = cursor.fetchone()
         reading = {}
         if not row is None:
             reading['d'] = row[0]
             reading['t'] = row[1]
             reading['c'] = row[2]
-        return 20, {}, reading
+        return 200, {}, reading
 
 @proxy_response
 def get_sample_readings(event, context):
     with conn.cursor() as cursor:
-        cursor.execute("select UNIX_TIMESTAMP(date), thermocouple_temp, cold_junction_temp from readings where user = 'hob' and unit = 'montecito' order by date asc limit 100")
+        cursor.execute("select UNIX_TIMESTAMP(date), thermocouple_temp, cold_junction_temp from readings where user = 'hob' and unit = 'montecito' order by date desc limit 100")
         readings = []
         for row in cursor:
             reading = {}

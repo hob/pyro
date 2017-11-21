@@ -5,11 +5,10 @@ import {convertDate, convertTemps} from './components/util/DateUtils'
 
 require('./scss/pyro.scss');
 
-let url = 'https://zsz5ychlqi.execute-api.us-east-1.amazonaws.com/prod/sample-readings';
-let request = new Request(url, {
-  headers: new Headers({
-    "X-Api-Key":"peoo6mHOGE8xrPtXl41wM3SWHmRZ4qcV8DrzlA4M"
-  })
+let readingsUrl = 'https://zsz5ychlqi.execute-api.us-east-1.amazonaws.com/prod/hob/montecito/readings';
+let latestReadingEndpoint = 'https://zsz5ychlqi.execute-api.us-east-1.amazonaws.com/prod/hob/montecito/readings/latest';
+let request = new Request(readingsUrl, {
+  headers: new Headers({})
 });
 fetch(request)
   .then(function(response) {
@@ -20,7 +19,7 @@ fetch(request)
         convertTemps(reading);
     });
     ReactDOM.render(
-      <Pyro readings={readings} />,
+      <Pyro readings={readings} latestReadingEndpoint={latestReadingEndpoint}/>,
       document.getElementById('contentPane')
     );
   });

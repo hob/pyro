@@ -7,19 +7,18 @@ class Pyro extends React.Component {
   constructor(props) {
     super(props);
     this.readings = props['readings'];
+    this.latestReadingEndpoint = props['latestReadingEndpoint']
   }
 
   render() {
-    this.fillGauge = <FillGauge readings={this.readings} />
-    this.lineGraph = <LineGraph readings={this.readings} />
     return <div id="contentPane">
-      {this.fillGauge}
-      {this.lineGraph}
+      <FillGauge readings={this.readings} currentReading={this.readings[this.readings.length - 1]} ref={(fillGauge) => {this.fillGauge = fillGauge; }} />
+      <LineGraph readings={this.readings} ref={(lineGraph) => {this.lineGraph = lineGraph; }}/>
     </div>;
   }
 
   componentDidMount() {
-    this.autoUpdate = new AutoUpdate(this.fillGauge, this.lineGraph);
+    this.autoUpdate = new AutoUpdate(this.fillGauge, this.lineGraph, this.latestReadingEndpoint, this.readings);
     this.autoUpdate.init();
   }
 }

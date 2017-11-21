@@ -6,13 +6,15 @@ import {getColorByTemp} from './common/thresholds.js';
 class FillGauge extends React.Component {
   constructor(props) {
     super(props)
-    this.readings = props['readings'];
-    this.currentReading = null;
+    this.state = {
+      readings: props['readings'],
+      currentReading: props['currentReading']
+    }
     this.gauge = null;
   }
 
   render() {
-    if(this.readings.length > 0) {
+    if(this.state.readings.length > 0) {
       return <div id="fillgaugeContainer">
                <svg id="fillGauge"></svg>
              </div>
@@ -22,12 +24,11 @@ class FillGauge extends React.Component {
   }
 
   componentDidMount() {
-    this.displayReading(this.readings[this.readings.length - 1]);
+    this.displayCurrentReading();
   }
 
-  displayReading(reading) {
-      this.currentReading = reading;
-      var thermostatTemp = reading.t;
+  displayCurrentReading() {
+      var thermostatTemp = this.state.currentReading.t;
       if(this.gauge == null) {
           var config = liquidFillGaugeDefaultSettings();
           config.circleColorFunction = function() {
@@ -53,11 +54,12 @@ class FillGauge extends React.Component {
           config.waveAnimateTime = 10000;
           config.displayPercent = false;
           config.maxValue = 700;
-          let that = this;
-          config.timeStampFunction = function() {
-              return that.currentReading.d.toLocaleTimeString();
+          config.timeStampFunction = () => {
+              return this.state.currentReading.d.toLocaleTimeString();
           };
-          // config.timeStamp = reading.d.toLocaleTimeString();
+          config.dateStampFunction = () => {
+              return this.state.currentReading.d.toLocaleDateString();
+          };
 
           this.gauge = loadLiquidFillGauge("fillGauge", thermostatTemp, config);
       }else{

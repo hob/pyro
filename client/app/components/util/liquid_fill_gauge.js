@@ -139,6 +139,9 @@ function loadLiquidFillGauge(elementId, value, config) {
 
     var timeStampHeight = textPixels/3;
     var timeStampScaleY = scaleY + timeStampHeight + 20;
+    var dateStampHeight = timeStampHeight / 2;
+    var dateStampScaleY = scaleY + dateStampHeight + 80;
+
     var timeText1 = gaugeGroup.append("text")
         .text(config.timeStampFunction())
         .attr("class", "latestReadingTime")
@@ -146,6 +149,14 @@ function loadLiquidFillGauge(elementId, value, config) {
         .attr("font-size", timeStampHeight + "px")
         .style("fill", config.timeStampColorFunction())
         .attr('transform', 'translate(' + radius + ',' + timeStampScaleY + ')');
+
+    var dateText1 = gaugeGroup.append("text")
+        .text(config.dateStampFunction())
+        .attr("class", "latestReadingDate")
+        .attr("text-anchor", "middle")
+        .attr("font-size", dateStampHeight + "px")
+        .style("fill", config.timeStampColorFunction())
+        .attr('transform', 'translate(' + radius + ',' + dateStampScaleY + ')');
 
     // The clipping wave area.
     var clipArea = d3.area()
@@ -192,7 +203,13 @@ function loadLiquidFillGauge(elementId, value, config) {
         .style("fill", config.timeStampWaveTextColorFunction())
         .attr('transform', 'translate(' + radius + ',' + timeStampScaleY + ')');
 
-
+    var dateText2 = gaugeGroup.append("text")
+        .text(config.dateStampFunction())
+        .attr("class", "latestReadingDate")
+        .attr("text-anchor", "middle")
+        .attr("font-size", dateStampHeight + "px")
+        .style("fill", config.timeStampWaveTextColorFunction())
+        .attr('transform', 'translate(' + radius + ',' + dateStampScaleY + ')');
 
     // Make the value count up.
     if (config.valueCountUp) {
@@ -270,8 +287,12 @@ function loadLiquidFillGauge(elementId, value, config) {
             text2.transition()
                 .duration(config.waveRiseTime)
                 .tween("text", textTween);
-            timeText1.text(config.timeStampFunction());
-            timeText2.text(config.timeStampFunction());
+            let timeStamp = config.timeStampFunction();
+            let dateStamp = config.dateStampFunction();
+            timeText1.text(timeStamp);
+            timeText2.text(timeStamp);
+            dateText1.text(dateStamp);
+            dateText2.text(dateStamp);
 
             var fillPercent = Math.max(config.minValue, Math.min(config.maxValue, value)) / config.maxValue;
             var waveHeight = fillCircleRadius * waveHeightScale(fillPercent * 100);
