@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <script src="https://d3js.org/d3.v4.min.js" language="JavaScript"></script>
+    <script type="text/javascript">
+      function detokenize(url) {
+        let user = "hob";
+        let unit = "montecito";
+        return url.replace("{user}", user).replace("{unit}", unit);
+      }
+
+      let readingsUrl = detokenize('https://zsz5ychlqi.execute-api.us-east-1.amazonaws.com/prod/{user}/{unit}/readings');
+      let latestReadingEndpoint = detokenize('https://zsz5ychlqi.execute-api.us-east-1.amazonaws.com/prod/{user}/{unit}/readings/latest');
+    </script>
     <title>Pyro - Thermocouple Readings Visualizer</title>
   </head>
   <body>

@@ -5,8 +5,6 @@ import {convertDate, convertTemps} from './components/util/DateUtils'
 
 require('./scss/pyro.scss');
 
-let readingsUrl = 'https://zsz5ychlqi.execute-api.us-east-1.amazonaws.com/prod/hob/montecito/readings';
-let latestReadingEndpoint = 'https://zsz5ychlqi.execute-api.us-east-1.amazonaws.com/prod/hob/montecito/readings/latest';
 let request = new Request(readingsUrl, {
   headers: new Headers({})
 });
