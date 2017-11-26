@@ -6,6 +6,7 @@ import json
 from lambda_proxy import *
 from inspect import getmembers
 from pprint import pprint
+from jinja2 import Template
 
 #rds settings
 rds_host  = "pyro2017dev.czpfwgnlj7lt.us-east-1.rds.amazonaws.com"
@@ -52,10 +53,9 @@ def create_reading(event, context):
 
     return 200, {}, {}
 
-@proxy_response
 def get_readings_handler(event, context):
-    user = event['pathParameters']['user']
-    unit = event['pathParameters']['unit']
+    user = event['user']
+    unit = event['unit']
 
     with conn.cursor() as cursor:
         cursor.execute("select UNIX_TIMESTAMP(date) from resets where user = '%(user)s' and unit = '%(unit)s' order by date desc limit 1" % {'user':user, 'unit':unit})
@@ -75,7 +75,29 @@ def get_readings_handler(event, context):
             reading['c'] = row[2]
             readings.append(reading)
 
-    return 200, {}, readings
+    template = Template('''<!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <link rel="icon" href="https://s3.amazonaws.com/pyrolambda/pyro.ico" type="image/x-icon" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+        <script src="https://d3js.org/d3.v4.min.js" language="JavaScript"></script>
+        <script type="text/javascript">
+          let readings = {{ readings }};
+          let latestReadingEndpoint = 'https://zsz5ychlqi.execute-api.us-east-1.amazonaws.com/prod/{{ user }}/{{ unit }}/readings/latest';
+        </script>
+        <title>Pyro - Thermocouple Readings Visualizer</title>
+      </head>
+      <body>
+        <div id="contentPane"></div>
+        <script type="text/javascript" src="https://s3.amazonaws.com/pyrolambda/pyro.js"></script>
+      </body>
+    </html>''')
+    logger.info(template)
+    rendered = template.render(readings=readings, user=user, unit=unit)
+    logger.info(rendered)
+    return rendered
 
 @proxy_response
 def get_latest_reading_handler(event, context):

@@ -35,4 +35,4 @@ def proxy_response_list(response_handler):
     return wrapper
 
 def configure_cors(headers):
-    headers['Access-Control-Allow-Origin'] = "http://www.pyrodev.com:8080"
+    headers['Access-Control-Allow-Origin'] = "*"
