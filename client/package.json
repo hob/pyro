@@ -6,13 +6,13 @@
   "repository": "..",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack",
-    "start": "webpack-dev-server --open --config webpack.dev.js",
-    "build": "webpack --config webpack.prod.js"
+    "build": "webpack --config webpack.prod.js",
+    "start": "webpack-dev-server --open --config webpack.dev.js"
   },
   "author": "Hob Spillane",
   "license": "ISC",
   "dependencies": {
+    "moment-timezone": "^0.5.14",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "whatwg-fetch": "^2.0.3"
