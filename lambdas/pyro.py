@@ -32,9 +32,7 @@ def reset(event, context):
     unit = event['pathParameters']['unit']
 
     with conn.cursor() as cursor:
-        sql = "insert into resets values('%(user)s', '%(unit)s', now())" % {'user':user, 'unit':unit}
-        logger.info(sql);
-        cursor.execute(sql);
+        cursor.execute("insert into resets values('%(user)s', '%(unit)s', now())" % {'user':user, 'unit':unit});
         conn.commit();
 
     return 200, {}, {}
@@ -57,7 +55,15 @@ def get_readings_handler(event, context):
     user = event['user']
     unit = event['unit']
 
-    with conn.cursor() as cursor:
+    try:
+        read_conn = pymysql.connect(rds_host, user=name, passwd=password, db=db_name, connect_timeout=5)
+    except pymysql.err.MySQLError as e:
+        logger.error('Got error {!r}, errno is {}'.format(e, e.args[0]))
+        sys.exit()
+
+    logger.info("SUCCESS: Connection to RDS mysql instance succeeded")
+
+    with read_conn.cursor() as cursor:
         cursor.execute("select UNIX_TIMESTAMP(date) from resets where user = '%(user)s' and unit = '%(unit)s' order by date desc limit 1" % {'user':user, 'unit':unit})
         row = cursor.fetchone()
         if row[0] is None:
@@ -94,16 +100,20 @@ def get_readings_handler(event, context):
         <script type="text/javascript" src="https://s3.amazonaws.com/pyrolambda/pyro.js"></script>
       </body>
     </html>''')
-    logger.info(template)
-    rendered = template.render(readings=readings, user=user, unit=unit)
-    logger.info(rendered)
-    return rendered
+    return template.render(readings=readings, user=user, unit=unit)
 
 @proxy_response
 def get_latest_reading_handler(event, context):
     user = event['pathParameters']['user']
     unit = event['pathParameters']['unit']
-    with conn.cursor() as cursor:
+
+    try:
+        read_conn = pymysql.connect(rds_host, user=name, passwd=password, db=db_name, connect_timeout=5)
+    except pymysql.err.MySQLError as e:
+        logger.error('Got error {!r}, errno is {}'.format(e, e.args[0]))
+        sys.exit()
+
+    with read_conn.cursor() as cursor:
         cursor.execute("select UNIX_TIMESTAMP(date) from resets where user = '%(user)s' and unit = '%(unit)s' order by date desc limit 1" % {'user':user, 'unit':unit})
         row = cursor.fetchone()
         if row[0] is None:
@@ -119,20 +129,6 @@ def get_latest_reading_handler(event, context):
             reading['t'] = row[1]
             reading['c'] = row[2]
         return 200, {}, reading
-
-@proxy_response
-def get_sample_readings(event, context):
-    with conn.cursor() as cursor:
-        cursor.execute("select UNIX_TIMESTAMP(date), thermocouple_temp, cold_junction_temp from readings where user = 'hob' and unit = 'montecito' order by date desc limit 100")
-        readings = []
-        for row in cursor:
-            reading = {}
-            reading['d'] = row[0]
-            reading['t'] = row[1]
-            reading['c'] = row[2]
-            readings.append(reading)
-
-    return 200, {}, readings
 
 @proxy_response
 def clean_future_rows_handler(event, context):

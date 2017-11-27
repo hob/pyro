@@ -38,10 +38,5 @@ module.exports = {
   plugins: [
     HTMLWebpackPluginConfig,
     extractSass
-  ],
-  devServer: {
-    allowedHosts: [
-      "www.pyrodev.com"
-    ]
-  }
+  ]
 };
