@@ -1,6 +1,6 @@
 import sys
 import logging
-import rds_config
+import os
 import pymysql
 import json
 from lambda_proxy import *
@@ -10,10 +10,9 @@ from jinja2 import Template
 
 #rds settings
 rds_host  = "pyro2017dev.czpfwgnlj7lt.us-east-1.rds.amazonaws.com"
-name = rds_config.db_username
-password = rds_config.db_password
-db_name = rds_config.db_name
-
+name = os.environ['rdsUserName']
+password = os.environ['rdsPassword']
+db_name = os.environ['rdsDBName']
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
